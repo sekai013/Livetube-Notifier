@@ -1,0 +1,33 @@
+{
+	"name": "Livetube Notifier",
+	"description": "Have notice of and enjoy your favorite livetube videos!",
+	"version": "1.0.0",
+	"author": "sekai013",
+	"permissions": [
+		"notifications",
+		"storage",
+		"alarms",
+		"tabs",
+		"http://livetube.cc/*"
+	],
+	"browser_action": {
+		"default_popup": "background/popup.html",
+		"default_icon": {
+			"19": "img/icon19.png",
+			"38": "img/icon38.png"
+		},
+		"default_title": "Livetube Notifier for Google Chrome"
+	},
+	"background": {
+		"scripts": [
+			"background/jquery-2.1.1.min.js",
+			"background/background.js"
+		]
+	},
+	"icons": {
+		"16": "img/icon16.png",
+		"48": "img/icon48.png",
+		"128": "img/icon128.png"
+	},
+	"manifest_version": 2
+}

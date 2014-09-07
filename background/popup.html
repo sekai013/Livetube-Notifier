@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset = "utf-8">
+<title></title>
+<script src="./jquery-2.1.1.min.js"></script>
+<script src="./popup.js"></script>
+<script src="./tab.js"></script>
+<link href="./popup.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="tabset">
+	<ul>
+		<li><a href="#tab1" class="selected"><span>配信一覧</span></a></li>
+		<li><a href="#tab2"><span>ワード登録</span></a></li>
+	</ul>
+
+	<div class="panels">
+
+		<div id="tab1" class="panel">
+			<button id="toggle" class="toStart">配信取得開始</button>
+			<div id="movieList">
+
+			</div>
+		</div>
+
+		<div id="tab2" class="panel">
+			<select id="typeSelector">
+				<option value="title">配信名</option>
+				<option value="author">配信者名</option>
+				<option value="tags">タグ</option>
+			</select>
+			<input id="word">
+			<button id="register">登録</button>
+			<div id="wordList">
+				<div id="title">
+					<a>配信名:</a>
+
+				</div>
+				<div id="author">
+					<a>配信者名:</a>
+
+				</div>
+				<div id="tags">
+					<a>タグ名:</a>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>
+
+
