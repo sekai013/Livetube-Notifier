@@ -78,9 +78,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	if(message.type === 'start') {
 		chrome.alarms.create('repeat', { periodInMinutes: 1 });
 		updateVideoList();
-		chrome.storage.sync.get('state', function(value) {
+		chrome.storage.sync.get('getting', function(value) {
 			newValue = value;
-			newValue.state = 1;
+			newValue.getting = 1;
 			chrome.storage.sync.set(newValue, function() {} );
 		});
 		chrome.notifications.create('LTN_' + Date.now(), {
@@ -95,9 +95,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 		});
 	} else if(message.type === 'stop') {
 		chrome.alarms.clear('repeat', function() {});
-		chrome.storage.sync.get('state', function(value) {
+		chrome.storage.sync.get('getting', function(value) {
 			var newValue = value;
-			newValue.state = 0;
+			newValue.getting = 0;
 			chrome.storage.sync.set(newValue, function() {} );
 		});
 		chrome.notifications.create('LTN_' + Date.now(), {

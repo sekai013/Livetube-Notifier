@@ -1,9 +1,15 @@
 $(function() {
-	chrome.storage.sync.get('state', function(value) {
-		if(value.state) {
+	chrome.storage.sync.get('getting', function(value) {
+		if(value.getting) {
 			$('#toggle').removeClass('toStart').text('配信取得終了');
 			chrome.runtime.sendMessage(chrome.runtime.id, { type: 'popupOpened' });
 		} else {
+		}
+	});
+
+	chrome.storage.sync.get('h', function(val) {
+		if(val.h) {
+			$('#hServer')[0].checked = 'checked';
 		}
 	});
 
@@ -19,13 +25,33 @@ $(function() {
 
 	$('#toggle').on('click', toggleClickHandler);
 
+	var checkChangeHandler = function(e) {
+		chrome.storage.sync.get('h', function(val) {
+			var newVal = val;
+			newVal.h = newVal.h || 0;
+			if( e.target.checked ) {
+				newVal.h = 1;
+			} else {
+				newVal.h = 0;
+			}
+			chrome.storage.sync.set(newVal, function(){} );
+		});
+	};
+
+	$('#hServer').on('change', checkChangeHandler);
+
 	chrome.runtime.onMessage.addListener(function(message, sender, response) {
 		if(message.type === 'update') {
 			var movies = message.movies;
 			$('#movieList').find('div').remove();
 			movies.forEach(function(movie) {
 				var div = $('<div>');
-				var title = $('<span>').html('配信名: <a href=http://livetube.cc/' + movie.link + ' target="_blank">' + movie.title + '</a>');
+				if( $('#hServer')[0].checked ) {
+					var url = 'http://h.livetube.cc/';
+				} else {
+					var url = 'http://livetube.cc/';
+				}
+				var title = $('<span>').html('配信名: <a href=' + url + movie.link + ' target="_blank">' + movie.title + '</a>');
 				var author = $('<span>').text('配信者名: ' + movie.author);
 				var tags = $('<span>').text('タグ: ' + movie.tags.join(','));
 				div.append(title).append('<br>').append(author).append('<br>').append(tags);
