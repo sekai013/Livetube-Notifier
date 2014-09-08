@@ -50,6 +50,8 @@ function getMovies(json) {
 				}
 			}
 		});
+		chrome.browserAction.setBadgeText( { text: movies.length.toString() } );
+		chrome.browserAction.setBadgeBackgroundColor( { color: '#47A' } );
 		chrome.runtime.sendMessage(chrome.runtime.id, { type: 'update', movies: movies });
 		checkNewVideos(movies, formerList);
 		formerList = movies;
@@ -104,6 +106,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 			title: 'Stop getting videos',
 			message: '動画の取得を停止しました'
 		}, function(id) {
+			chrome.browserAction.setBadgeText( { text: '' } );
 			setTimeout(function() {
 				chrome.notifications.clear(id, function() {});
 			}, 2000);
