@@ -45,7 +45,8 @@ $(function() {
 		 newValue.words[type].splice(index,1);
 		 chrome.storage.sync.set(newValue, function() {
 			 var spans = $('#' + type).find('span');
-			 $(spans[index]).remove();
+			 $('#' + type).find('span')[index].remove();
+			 var spans = $('#' + type).find('span');
 			 for(var i = index; i < spans.length; i++) {
 				 spans[i].id = type + '_' + i;
 			 }
