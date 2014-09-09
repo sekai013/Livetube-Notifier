@@ -53,6 +53,11 @@ ul li a.selected{
 	color: #990000;
 }
 
+#tab1 #notificationInterval span{
+	position: relative;
+	top: 3px;
+}
+
 /* panel 2 */
 #tab2 #register{
 	position: relative;
