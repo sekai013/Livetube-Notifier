@@ -7,10 +7,14 @@ $(function() {
 		}
 	});
 
-	chrome.storage.sync.get('h', function(val) {
-		if(val.h) {
+	chrome.storage.sync.get('h', function(value) {
+		if(value.h) {
 			$('#hServer')[0].checked = 'checked';
 		}
+	});
+
+	chrome.storage.sync.get('interval', function(value) {
+		$('#min' + value.interval)[0].selected = true;
 	});
 
 	var toggleClickHandler = function() {
@@ -26,19 +30,29 @@ $(function() {
 	$('#toggle').on('click', toggleClickHandler);
 
 	var checkChangeHandler = function(e) {
-		chrome.storage.sync.get('h', function(val) {
-			var newVal = val;
-			newVal.h = newVal.h || 0;
+		chrome.storage.sync.get('h', function(value) {
+			var newValue = value;
+			newValue.h = newValue.h || 0;
 			if( e.target.checked ) {
-				newVal.h = 1;
+				newValue.h = 1;
 			} else {
-				newVal.h = 0;
+				newValue.h = 0;
 			}
-			chrome.storage.sync.set(newVal, function(){} );
+			chrome.storage.sync.set(newValue, function(){});
 		});
 	};
 
 	$('#hServer').on('change', checkChangeHandler);
+
+	var intervalChangeHandler = function(e) {
+		chrome.storage.sync.get('interval', function(value) {
+			var newValue = value;
+			newValue.interval = e.target.value;
+			chrome.storage.sync.set(newValue, function(){});
+		});
+	};
+
+	$('#intervalSelector').on('change', intervalChangeHandler);
 
 	chrome.runtime.onMessage.addListener(function(message, sender, response) {
 		if(message.type === 'update') {

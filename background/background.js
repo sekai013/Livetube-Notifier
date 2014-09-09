@@ -76,8 +76,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 
 chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	if(message.type === 'start') {
-		chrome.alarms.create('repeat', { periodInMinutes: 1 });
-		updateVideoList();
+		chrome.storage.sync.get('interval', function(value) {
+			chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.interval) });
+			updateVideoList();
+		});
 		chrome.storage.sync.get('getting', function(value) {
 			newValue = value;
 			newValue.getting = 1;
