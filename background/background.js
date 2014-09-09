@@ -32,8 +32,23 @@ function checkNewVideos(current, former) {
 				}, 4000);
 			});
 		}
+		return newVideos;
 	}
 }
+
+function autoOpen(videos) {
+	chrome.storage.sync.get('h', function(value) {
+		if(value.h) {
+			var url = 'http://h.livetube.cc/';
+		} else {
+			var url = 'http://livetube.cc';
+		}
+		for(var i in videos) {
+			open(url + videos[i].link, null);
+		}
+	});
+}
+
 
 function getMovies(json) {
 	chrome.storage.sync.get('words', function(value) {
@@ -53,7 +68,12 @@ function getMovies(json) {
 		chrome.browserAction.setBadgeText( { text: movies.length.toString() } );
 		chrome.browserAction.setBadgeBackgroundColor( { color: '#47A' } );
 		chrome.runtime.sendMessage(chrome.runtime.id, { type: 'update', movies: movies });
-		checkNewVideos(movies, formerList);
+		var newVideos = checkNewVideos(movies, formerList);
+		chrome.storage.sync.get('autoOpen', function(value) {
+			if(value.autoOpen) {
+				autoOpen(newVideos);
+			}
+		});
 		formerList = movies;
 	});
 }

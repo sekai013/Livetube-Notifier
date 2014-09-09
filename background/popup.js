@@ -13,6 +13,12 @@ $(function() {
 		}
 	});
 
+	chrome.storage.sync.get('autoOpen', function(value) {
+		if(value.autoOpen) {
+			$('#autoOpen')[0].checked = 'checked';
+		}
+	});
+
 	chrome.storage.sync.get('interval', function(value) {
 		$('#min' + value.interval)[0].selected = true;
 	});
@@ -29,10 +35,9 @@ $(function() {
 
 	$('#toggle').on('click', toggleClickHandler);
 
-	var checkChangeHandler = function(e) {
+	var serverChangeHandler = function(e) {
 		chrome.storage.sync.get('h', function(value) {
 			var newValue = value;
-			newValue.h = newValue.h || 0;
 			if( e.target.checked ) {
 				newValue.h = 1;
 			} else {
@@ -42,7 +47,21 @@ $(function() {
 		});
 	};
 
-	$('#hServer').on('change', checkChangeHandler);
+	$('#hServer').on('change', serverChangeHandler);
+
+	var autoOpenChangeHandler = function(e) {
+		chrome.storage.sync.get('autoOpen', function(value) {
+			var newValue= value;
+			if( e.target.checked ) {
+				newValue.autoOpen = 1;
+			} else {
+				newValue.autoOpen = 0;
+			}
+			chrome.storage.sync.set(newValue, function(){});
+		});
+	};
+
+	$('#autoOpen').on('change', autoOpenChangeHandler);
 
 	var intervalChangeHandler = function(e) {
 		chrome.storage.sync.get('interval', function(value) {
