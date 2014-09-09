@@ -137,6 +137,32 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	}
 });
 
+chrome.runtime.onMessage.addListener(function(message, sender, response) {
+	if(message.type === 'deleted') {
+		 chrome.notifications.create('LTN_' + Date.now(), {
+			 type: 'basic',
+			 iconUrl: '../img/icon128.png',
+			 title: 'Deleted',
+			 message: 'ワードを削除しました: ' + message.wordType + ' - ' + message.word
+		 }, function(id) {
+			 setTimeout(function() {
+				 chrome.notifications.clear(id, function() {});
+			 }, 2000);
+		 });
+	} else if(message.type === 'registered') {
+		chrome.notifications.create('LTN_' + Date.now(), {
+			type: 'basic',
+			iconUrl: '../img/icon128.png',
+			title: 'Registered!',
+			message: 'ワードを登録しました: ' + message.wordType + ' - ' + message.word
+		}, function(id) {
+			setTimeout(function() {
+				chrome.notifications.clear(id, function() {});
+			}, 2000);
+		});
+	}
+});
+
 chrome.alarms.onAlarm.addListener(function(alarm) {
 	if(alarm.name === 'repeat') {
 		updateVideoList();

@@ -113,15 +113,10 @@ $(function() {
 				 spans[i].id = type + '_' + i;
 			 }
 		 });
-		 chrome.notifications.create('LTN_' + Date.now(), {
-			 type: 'basic',
-			 iconUrl: '../img/icon128.png',
-			 title: 'Deleted',
-			 message: 'ワードを削除しました: ' + typeObj[type] + ' - ' + word
-		 }, function(id) {
-			 setTimeout(function() {
-				 chrome.notifications.clear(id, function() {});
-			 }, 2000);
+		 chrome.runtime.sendMessage(chrome.runtime.id, {
+			 type: 'deleted',
+			 word: word,
+			 wordType: typeObj[type]
 		 });
 	 });
  };
@@ -147,17 +142,12 @@ $(function() {
 			 chrome.storage.sync.set(newValue, function() {
 				 var elem = $('<span>').prop('id', type + '_' + idNum).text( $('#word').val() + ' ').on('click', deleteWord);
 				 $('#' + type).append(elem);
-				 chrome.notifications.create('LTN_' + Date.now(), {
-					 type: 'basic',
-					 iconUrl: '../img/icon128.png',
-					 title: 'Registered!',
-					 message: 'ワードを登録しました: ' + typeObj[type] + ' - ' + $('#word').val()
-				 }, function(id) {
-					 $('#word').val('');
-					 setTimeout(function() {
-						 chrome.notifications.clear(id, function() {});
-					 }, 2000);
-				 });
+				 $('#word').val('');
+			 });
+			 chrome.runtime.sendMessage(chrome.runtime.id, { 
+				 type: 'registered',
+				 word: $('#word').val(),
+				 wordType: typeObj[type]
 			 });
 		 });
 	 }
