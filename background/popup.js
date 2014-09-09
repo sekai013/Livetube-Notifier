@@ -52,8 +52,11 @@ $(function() {
 					var url = 'http://livetube.cc/';
 				}
 				var title = $('<span>').html('配信名: <a href=' + url + movie.link + ' target="_blank">' + movie.title + '</a>');
-				var author = $('<span>').text('配信者名: ' + movie.author);
-				var tags = $('<span>').text('タグ: ' + movie.tags.join(','));
+				var author = $('<span>').html('配信者名: <a href=' + url + encodeURI(movie.author) + ' target="_blank">' + movie.author + '</a>');
+				for(var i in movie.tags) {
+					movie.tags[i] = '<a href=' + url + 'tag.' + encodeURI(movie.tags[i]) + ' target="_blank">' + movie.tags[i] + '</a>';
+				}
+				var tags = $('<span>').html('タグ: ' + movie.tags.join(','));
 				div.append(title).append('<br>').append(author).append('<br>').append(tags);
 				$('#movieList').append(div);
 			});
