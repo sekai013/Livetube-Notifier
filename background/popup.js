@@ -21,7 +21,7 @@ $(function() {
 
 	var toggleClickHandler = function() {
 		if( $(this).is('.toStart') ) {
-			$(this).removeClass('toStart').text('配信取得終了');
+			$(this).removeClass('toStart').text('配信取得停止');
 			chrome.runtime.sendMessage(chrome.runtime.id, { type: 'start' });
 		} else {
 			$(this).addClass('toStart').text('配信取得開始');

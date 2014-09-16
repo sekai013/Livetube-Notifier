@@ -12,7 +12,7 @@ function checkNewVideos(current, former) {
 	var newVideos = [];
 	if(former.length) {
 		for(var i = 0; i < current.length; i++) {
-			if( !checkVideo(current[i], formerList) ) {
+			if( !checkVideo(current[i], former) ) {
 				newVideos.push(current[i]);
 			}
 		}
@@ -48,7 +48,6 @@ function autoOpen(videos) {
 		}
 	});
 }
-
 
 function getMovies(json) {
 	chrome.storage.sync.get('words', function(value) {
@@ -89,77 +88,77 @@ function updateVideoList() {
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, response) {
-	if(message.type === 'popupOpened') {
-		updateVideoList();
-	}
-});
-
-chrome.runtime.onMessage.addListener(function(message, sender, response) {
-	if(message.type === 'start') {
-		chrome.storage.sync.get('state', function(value) {
-			chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.state.interval) });
+	switch(message.type) {
+		case 'popupOpened':
 			updateVideoList();
-		});
-		chrome.storage.sync.get('state', function(value) {
-			newValue = value;
-			newValue.state.getting = 1;
-			chrome.storage.sync.set(newValue, function() {} );
-		});
-		chrome.notifications.create('LTN_' + Date.now(), {
-			type: 'basic',
-			iconUrl: '../img/icon128.png',
-			title: 'Start getting videos!',
-			message: '動画の取得を開始しました'
-		}, function(id) {
-			setTimeout(function() {
-				chrome.notifications.clear(id, function() {});
-			}, 2000);
-		});
-	} else if(message.type === 'stop') {
-		chrome.alarms.clear('repeat', function() {});
-		chrome.storage.sync.get('state', function(value) {
-			var newValue = value;
-			newValue.state.getting = 0;
-			chrome.storage.sync.set(newValue, function() {} );
-		});
-		chrome.notifications.create('LTN_' + Date.now(), {
-			type: 'basic',
-			iconUrl: '../img/icon128.png',
-			title: 'Stop getting videos',
-			message: '動画の取得を停止しました'
-		}, function(id) {
-			chrome.browserAction.setBadgeText( { text: '' } );
-			setTimeout(function() {
-				chrome.notifications.clear(id, function() {});
-			}, 2000);
-		});
-		formerList = [];
-	}
-});
+			break;
 
-chrome.runtime.onMessage.addListener(function(message, sender, response) {
-	if(message.type === 'deleted') {
-		 chrome.notifications.create('LTN_' + Date.now(), {
-			 type: 'basic',
-			 iconUrl: '../img/icon128.png',
-			 title: 'Deleted',
-			 message: 'ワードを削除しました: ' + message.wordType + ' - ' + message.word
-		 }, function(id) {
-			 setTimeout(function() {
-				 chrome.notifications.clear(id, function() {});
-			 }, 2000);
-		 });
-	} else if(message.type === 'registered') {
-		chrome.notifications.create('LTN_' + Date.now(), {
-			type: 'basic',
-			iconUrl: '../img/icon128.png',
-			title: 'Registered!',
-			message: 'ワードを登録しました: ' + message.wordType + ' - ' + message.word
-		}, function(id) {
-			setTimeout(function() {
-				chrome.notifications.clear(id, function() {});
-			}, 2000);
-		});
+		case 'start':
+			chrome.storage.sync.get('state', function(value) {
+				chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.state.interval) });
+				updateVideoList();
+				var newValue = value;
+				newValue.state.getting = 1;
+				chrome.storage.sync.set(newValue, function() {} );
+			});
+			chrome.notifications.create('LTN_' + Date.now(), {
+				type: 'basic',
+				iconUrl: '../img/icon128.png',
+				title: 'Start getting videos!',
+				message: '動画の取得を開始しました'
+			}, function(id) {
+				setTimeout(function() {
+					chrome.notifications.clear(id, function() {});
+				}, 2000);
+			});
+			break;
+
+		case 'stop':
+			chrome.alarms.clear('repeat', function() {});
+			chrome.storage.sync.get('state', function(value) {
+				var newValue = value;
+				newValue.state.getting = 0;
+				chrome.storage.sync.set(newValue, function() {} );
+			});
+			chrome.notifications.create('LTN_' + Date.now(), {
+				type: 'basic',
+				iconUrl: '../img/icon128.png',
+				title: 'Stop getting videos',
+				message: '動画の取得を停止しました'
+			}, function(id) {
+				chrome.browserAction.setBadgeText( { text: '' } );
+				setTimeout(function() {
+					chrome.notifications.clear(id, function() {});
+				}, 2000);
+			});
+			formerList = [];
+			break;
+
+		case 'deleted':
+			chrome.notifications.create('LTN_' + Date.now(), {
+				type: 'basic',
+				iconUrl: '../img/icon128.png',
+				title: 'Deleted',
+				message: 'ワードを削除しました: ' + message.wordType + ' - ' + message.word
+			}, function(id) {
+				setTimeout(function() {
+					chrome.notifications.clear(id, function() {});
+				}, 2000);
+			});
+			break;
+
+		case 'registered':
+			chrome.notifications.create('LTN_' + Date.now(), {
+				type: 'basic',
+				iconUrl: '../img/icon128.png',
+				title: 'Registered!',
+				message: 'ワードを登録しました: ' + message.wordType + ' - ' + message.word
+			}, function(id) {
+				setTimeout(function() {
+					chrome.notifications.clear(id, function() {});
+				}, 2000);
+			});
+			break;
 	}
 });
 
