@@ -37,8 +37,8 @@ function checkNewVideos(current, former) {
 }
 
 function autoOpen(videos) {
-	chrome.storage.sync.get('h', function(value) {
-		if(value.h) {
+	chrome.storage.sync.get('state', function(value) {
+		if(value.state.h) {
 			var url = 'http://h.livetube.cc/';
 		} else {
 			var url = 'http://livetube.cc';
@@ -69,8 +69,8 @@ function getMovies(json) {
 		chrome.browserAction.setBadgeBackgroundColor( { color: '#47A' } );
 		chrome.runtime.sendMessage(chrome.runtime.id, { type: 'update', movies: movies });
 		var newVideos = checkNewVideos(movies, formerList);
-		chrome.storage.sync.get('autoOpen', function(value) {
-			if(value.autoOpen) {
+		chrome.storage.sync.get('state', function(value) {
+			if(value.state.autoOpen) {
 				autoOpen(newVideos);
 			}
 		});
@@ -96,13 +96,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 
 chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	if(message.type === 'start') {
-		chrome.storage.sync.get('interval', function(value) {
-			chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.interval) });
+		chrome.storage.sync.get('state', function(value) {
+			chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.state.interval) });
 			updateVideoList();
 		});
-		chrome.storage.sync.get('getting', function(value) {
+		chrome.storage.sync.get('state', function(value) {
 			newValue = value;
-			newValue.getting = 1;
+			newValue.state.getting = 1;
 			chrome.storage.sync.set(newValue, function() {} );
 		});
 		chrome.notifications.create('LTN_' + Date.now(), {
@@ -117,9 +117,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 		});
 	} else if(message.type === 'stop') {
 		chrome.alarms.clear('repeat', function() {});
-		chrome.storage.sync.get('getting', function(value) {
+		chrome.storage.sync.get('state', function(value) {
 			var newValue = value;
-			newValue.getting = 0;
+			newValue.state.getting = 0;
 			chrome.storage.sync.set(newValue, function() {} );
 		});
 		chrome.notifications.create('LTN_' + Date.now(), {

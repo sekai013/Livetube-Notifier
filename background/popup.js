@@ -1,26 +1,22 @@
 $(function() {
-	chrome.storage.sync.get('getting', function(value) {
-		if(value.getting) {
-			$('#toggle').removeClass('toStart').text('配信取得終了');
-			chrome.runtime.sendMessage(chrome.runtime.id, { type: 'popupOpened' });
+	chrome.storage.sync.get('state', function(value) {
+		if(!value.state) {
+			var newValue = value;
+			newValue.state = { getting: 0, h: 0, autoOpen: 0, interval: 1 };
+			chrome.storage.sync.set(newValue, function(){});
 		} else {
+			if(value.state.getting) {
+				$('#toggle').removeClass('toStart').text('配信取得停止');
+				chrome.runtime.sendMessage(chrome.runtime.id, { type: 'popupOpened' });
+			}
+			if(value.state.h) {
+				$('#hServer')[0].checked = 'checked';
+			}
+			if(value.state.autoOpen) {
+				$('#autoOpen')[0].checked = 'checked';
+			}
+			$('#min' + value.state.interval)[0].selected = true;
 		}
-	});
-
-	chrome.storage.sync.get('h', function(value) {
-		if(value.h) {
-			$('#hServer')[0].checked = 'checked';
-		}
-	});
-
-	chrome.storage.sync.get('autoOpen', function(value) {
-		if(value.autoOpen) {
-			$('#autoOpen')[0].checked = 'checked';
-		}
-	});
-
-	chrome.storage.sync.get('interval', function(value) {
-		$('#min' + value.interval)[0].selected = true;
 	});
 
 	var toggleClickHandler = function() {
@@ -36,12 +32,12 @@ $(function() {
 	$('#toggle').on('click', toggleClickHandler);
 
 	var serverChangeHandler = function(e) {
-		chrome.storage.sync.get('h', function(value) {
+		chrome.storage.sync.get('state', function(value) {
 			var newValue = value;
 			if( e.target.checked ) {
-				newValue.h = 1;
+				newValue.state.h = 1;
 			} else {
-				newValue.h = 0;
+				newValue.state.h = 0;
 			}
 			chrome.storage.sync.set(newValue, function(){});
 		});
@@ -50,12 +46,12 @@ $(function() {
 	$('#hServer').on('change', serverChangeHandler);
 
 	var autoOpenChangeHandler = function(e) {
-		chrome.storage.sync.get('autoOpen', function(value) {
-			var newValue= value;
+		chrome.storage.sync.get('state', function(value) {
+			var newValue = value;
 			if( e.target.checked ) {
-				newValue.autoOpen = 1;
+				newValue.state.autoOpen = 1;
 			} else {
-				newValue.autoOpen = 0;
+				newValue.state.autoOpen = 0;
 			}
 			chrome.storage.sync.set(newValue, function(){});
 		});
@@ -64,9 +60,9 @@ $(function() {
 	$('#autoOpen').on('change', autoOpenChangeHandler);
 
 	var intervalChangeHandler = function(e) {
-		chrome.storage.sync.get('interval', function(value) {
+		chrome.storage.sync.get('state', function(value) {
 			var newValue = value;
-			newValue.interval = e.target.value;
+			newValue.state.interval = e.target.value;
 			chrome.storage.sync.set(newValue, function(){});
 		});
 	};
