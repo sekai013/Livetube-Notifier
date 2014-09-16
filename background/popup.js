@@ -63,6 +63,9 @@ $(function() {
 		chrome.storage.sync.get('state', function(value) {
 			var newValue = value;
 			newValue.state.interval = e.target.value;
+			if(value.state.getting) {
+				chrome.runtime.sendMessage(chrome.runtime.id, { type: 'changeInterval', interval: e.target.value });
+			}
 			chrome.storage.sync.set(newValue, function(){});
 		});
 	};

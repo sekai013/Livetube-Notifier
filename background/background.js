@@ -159,6 +159,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 				}, 2000);
 			});
 			break;
+
+		case 'changeInterval':
+			chrome.alarms.create('repeat', { periodInMinutes: parseInt(message.interval) });
+			break;
 	}
 });
 
