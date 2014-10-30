@@ -39,12 +39,12 @@ function checkNewVideos(current, former) {
 function autoOpen(videos) {
 	chrome.storage.sync.get('state', function(value) {
 		if(value.state.h) {
-			var url = 'http://h.livetube.cc/';
+			var url = 'http://h.livetube.cc';
 		} else {
 			var url = 'http://livetube.cc';
 		}
 		for(var i in videos) {
-			open(url + videos[i].link, null);
+			open(url + '/' + videos[i].link, null);
 		}
 	});
 }
