@@ -45,11 +45,11 @@ ul li a.selected{
 }
 
 /* panel 1 */
-#tab1 #movieList div span a{
+#tab1 #videoList div span a{
 	color: #47A;
 }
 
-#tab1 #movieList div span a:hover{
+#tab1 #videoList div span a:hover{
 	color: #990000;
 }
 

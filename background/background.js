@@ -1,110 +1,125 @@
-var formerList = [];
-
-function checkVideo(video, list) {
-	return list.some( function(item) {
-		if(video.id === item.id) {
+function included(video, videoArray) {
+	// if videoArray includes video, return true, else return false
+	return videoArray.some(function(item) {
+		if(item.id === video.id) {
 			return true;
 		}
 	});
 }
 
-function checkNewVideos(current, former) {
-	var newVideos = [];
-	if(former.length) {
-		for(var i = 0; i < current.length; i++) {
-			if( !checkVideo(current[i], former) ) {
-				newVideos.push(current[i]);
-			}
-		}
-	} else {
-		newVideos = current;
-	}
-	if( newVideos.length ) {
-		for(var k = 0; k < newVideos.length; k++) {
-			chrome.notifications.create('LTN_' + Date.now(), {
-				type: 'basic',
-				iconUrl: '../img/icon128.png',
-				title: 'New video has been started!',
-				message: '新しい配信が開始しました: ' + newVideos[k].author + '/' + newVideos[k].title
-			}, function(id) {
-				setTimeout(function() {
-					chrome.notifications.clear(id, function() {});
-				}, 4000);
-			});
-		}
-		return newVideos;
-	}
+function sendVideosToPopup(videos) {
+	chrome.runtime.sendMessage(chrome.runtime.id, {
+		type: 'updatePopup',
+		videos: videos
+	});
 }
 
-function autoOpen(videos) {
-	chrome.storage.sync.get('state', function(value) {
-		if(value.state.h) {
-			var url = 'http://h.livetube.cc';
-		} else {
-			var url = 'http://livetube.cc';
+var checkNewVideos = (function() {
+	var formerVideos = [];
+
+	return function(currentVideos) {
+		var newVideos = [];
+
+		for(var i = 0; i < currentVideos.length; i++) {
+			if(!included(currentVideos[i], formerVideos)) {
+				newVideos.push(currentVideos[i]);
+
+				chrome.notifications.create('LTN_' + Date.now(), {
+					type: 'basic',
+					iconUrl: '../img/icon128.png',
+					title: 'New video has been started!',
+					message: '新しい配信が開始しました: ' + currentVideos[i].author + '/' + currentVideos[i].title
+				}, function(id) {
+					setTimeout(function() {
+						chrome.notifications.clear(id, function() {});
+					}, 4000);
+				});
+			}
 		}
-		for(var i in videos) {
-			open(url + '/' + videos[i].link, null);
+
+		formerVideos = currentVideos;
+
+		return newVideos;
+	};
+})();
+
+function autoOpenNewVideos(newVideos) {
+	chrome.storage.sync.get('state', function(value) {
+		if(value.state.autoOpen) {
+			var host = (value.state.h)? 'http://h.livetube.cc' : 'http://livetube.cc';
+			for(var i = 0; i < newVideos.length; i++) {
+				open(host + '/' + newVideos[i].link, null);
+			}
 		}
 	});
 }
 
-function getMovies(json) {
+function extractTargetVideos(json) {
 	chrome.storage.sync.get('words', function(value) {
-		var movies = [];
 		var words = value.words;
+		var videos = [];
 
 		Object.keys(words).forEach(function(type) {
-			for(var i = 0; i < json.length; i++) {
-				for(var j = 0; j < words[type].length; j++) {
-					if(json[i][type].indexOf(words[type][j]) !== -1) {
-						movies.push(json[i]);
-						break;
+			if(words[type].length === 0) {
+			} else {
+				for(var i = 0; i < json.length; i++) {
+					for(var j = 0; j < words[type].length; j++) {
+						if(json[i][type].indexOf(words[type][j]) !== -1) { 
+							// if json[i] includes a registered word
+							videos.push(json[i]);
+							break;
+						}
 					}
 				}
 			}
 		});
-		chrome.browserAction.setBadgeText( { text: movies.length.toString() } );
-		chrome.browserAction.setBadgeBackgroundColor( { color: '#47A' } );
-		chrome.runtime.sendMessage(chrome.runtime.id, { type: 'update', movies: movies });
-		var newVideos = checkNewVideos(movies, formerList);
-		chrome.storage.sync.get('state', function(value) {
-			if(value.state.autoOpen) {
-				autoOpen(newVideos);
-			}
-		});
-		formerList = movies;
+
+		chrome.browserAction.setBadgeText({text: videos.length.toString()});
+		chrome.browserAction.setBadgeBackgroundColor({color: '#47A'});
+
+		sendVideosToPopup(videos);
+		var newVideos = checkNewVideos(videos);
+		if(newVideos) {
+			autoOpenNewVideos(newVideos);
+		}
+
 	});
 }
 
-function updateVideoList() {
-	$.ajax( {
+function refreshVideos() {
+	$.ajax({
 		url: 'http://livetube.cc/index.live.json',
 		type: 'get',
-		success: function(res) {
-			getMovies(res);
+		success: function(json) {
+			extractTargetVideos(json);
 		}
-	} );
+	});
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, response) {
 	switch(message.type) {
 		case 'popupOpened':
-			updateVideoList();
+			refreshVideos();
 			break;
 
-		case 'start':
+		case 'startGettingVideos':
+			refreshVideos();
+
 			chrome.storage.sync.get('state', function(value) {
-				chrome.alarms.create('repeat', { periodInMinutes: parseInt(value.state.interval) });
-				updateVideoList();
 				var newValue = value;
-				newValue.state.getting = 1;
-				chrome.storage.sync.set(newValue, function() {} );
+				newValue.state.gettingVideos = true;
+
+				chrome.alarms.create('refreshVideos', {
+					periodInMinutes: value.state.intervalInMinutes
+				});
+
+				chrome.storage.sync.set(newValue, function(){});
 			});
+
 			chrome.notifications.create('LTN_' + Date.now(), {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
-				title: 'Start getting videos!',
+				title: 'Start Getting Videos!',
 				message: '動画の取得を開始しました'
 			}, function(id) {
 				setTimeout(function() {
@@ -113,28 +128,35 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 			});
 			break;
 
-		case 'stop':
-			chrome.alarms.clear('repeat', function() {});
+		case 'stopGettingVideos':
+			chrome.alarms.clear('refreshVideos', function(){});
+				
 			chrome.storage.sync.get('state', function(value) {
 				var newValue = value;
-				newValue.state.getting = 0;
-				chrome.storage.sync.set(newValue, function() {} );
+				newValue.state.gettingVideos = false;
+				chrome.storage.sync.set(newValue, function(){});
 			});
+
 			chrome.notifications.create('LTN_' + Date.now(), {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
-				title: 'Stop getting videos',
-				message: '動画の取得を停止しました'
+				title: 'Start Getting Videos!',
+				message: '動画の取得を開始しました'
 			}, function(id) {
-				chrome.browserAction.setBadgeText( { text: '' } );
 				setTimeout(function() {
 					chrome.notifications.clear(id, function() {});
 				}, 2000);
 			});
-			formerList = [];
+
+			chrome.browserAction.setBadgeText({text: ''});
 			break;
 
-		case 'deleted':
+		case 'changeUpdateInterval':
+			// if an alarm with the same name already exists, it is replaced by new one
+			chrome.alarms.create('refreshVideos', {periodInMinutes: message.intervalInMinutes});
+			break;
+
+		case 'wordDeleted':
 			chrome.notifications.create('LTN_' + Date.now(), {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
@@ -147,7 +169,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 			});
 			break;
 
-		case 'registered':
+		case 'wordRegistered':
 			chrome.notifications.create('LTN_' + Date.now(), {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
@@ -159,15 +181,24 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 				}, 2000);
 			});
 			break;
-
-		case 'changeInterval':
-			chrome.alarms.create('repeat', { periodInMinutes: parseInt(message.interval) });
-			break;
 	}
 });
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
-	if(alarm.name === 'repeat') {
-		updateVideoList();
+	if(alarm.name === 'refreshVideos') {
+		refreshVideos();
 	}
+});
+
+chrome.runtime.onInstalled.addListener(function() {
+	chrome.storage.sync.get('state', function(value) {
+		var newValue = value;
+		newValue.state = {
+			gettingVideos:     false,
+			h:                 false,
+			autoOpen:          false,
+			intervalInMinutes: 1
+		};
+		chrome.storage.sync.set(newValue, function(){});
+	});
 });
