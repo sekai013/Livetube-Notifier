@@ -141,7 +141,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
 				title: 'Start Getting Videos!',
-				message: '動画の取得を開始しました'
+				message: '動画の取得を停止しました'
 			}, function(id) {
 				setTimeout(function() {
 					chrome.notifications.clear(id, function() {});
