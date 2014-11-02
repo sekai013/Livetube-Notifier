@@ -140,7 +140,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, response) {
 			chrome.notifications.create('LTN_' + Date.now(), {
 				type: 'basic',
 				iconUrl: '../img/icon128.png',
-				title: 'Start Getting Videos!',
+				title: 'Stop Getting Videos',
 				message: '動画の取得を停止しました'
 			}, function(id) {
 				setTimeout(function() {
