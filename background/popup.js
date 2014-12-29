@@ -116,7 +116,10 @@ $(function() {
 
 		 chrome.storage.sync.set(newValue, function() {
 			 var spans = $('#' + type).find('span');
+
 			 spans[index].remove();
+			 spans.splice(index, 1);
+
 			 for(var i = index; i < spans.length; i++) {
 				 spans[i].id = type + '_' + i;
 			 }
