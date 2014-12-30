@@ -1,0 +1,62 @@
+body {
+	width: 520px;
+}
+
+.panel {
+	background-color: #ccc;
+}
+
+.btn-default {
+	background-color: #e9e9e9;
+	border-color: #adadad;
+}
+
+.selected,
+.selected:hover,
+.selected:focus {
+	background-color: #ccc;
+	border-color: #adadad;
+	border-bottom-color: #ccc;
+}
+
+.default {
+	position: relative;
+	left: 5px;
+}
+
+.selector {
+	position: relative;
+	top: 2px;
+}
+
+.panels div {
+	padding: 10px;
+	background-color: #ccc;
+}
+
+/* tab 1 */
+#tab1 #videoList div span a{
+	color: #47A;
+}
+
+#tab1 #videoList div span a:hover{
+	color: #990000;
+}
+
+#tab1 #notificationInterval span{
+	position: relative;
+	top: 1px;
+}
+
+/* tab 2 */
+#tab2 #register {
+	position: relative;
+}
+
+#tab2 #wordList div span {
+	color: #47A;
+}
+
+#tab2 #wordList div span:hover {
+	color: #990000;
+}

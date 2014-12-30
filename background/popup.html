@@ -3,22 +3,23 @@
 <head>
 <meta charset = "utf-8">
 <title></title>
-<script src="./jquery-2.1.1.min.js"></script>
-<script src="./popup.js"></script>
-<script src="./tab.js"></script>
-<link href="./popup.css" rel="stylesheet" type="text/css" />
+<script src="./js/lib/jquery-2.1.1.min.js"></script>
+<script src="./js/popup.js"></script>
+<script src="./js/tab.js"></script>
+<link rel="stylesheet" href="./css/bootstrap.css">
+<link rel="stylesheet" href="./css/popup.css">
 </head>
 <body>
 <div class="tabset">
-	<ul>
-		<li><a href="#tab1" class="selected"><span>配信一覧</span></a></li>
-		<li><a href="#tab2"><span>ワード登録</span></a></li>
-	</ul>
+	<div class="tabs">
+		<a href="#tab1" class="btn btn-default selected default selector"><span>配信一覧</span></a>
+		<a href="#tab2" class="btn btn-default selector"><span>ワード登録</span></a>
+	</div>
 
 	<div class="panels">
 
 		<div id="tab1" class="panel">
-			<button id="toggle" class="toStart">配信取得開始</button>
+			<button id="toggle" class="btn btn-default btn-sm toStart">配信取得開始</button>
 			<span id="notificationInterval">
 				<span>配信通知間隔</span>
 				<select id="intervalSelector">
@@ -43,18 +44,18 @@
 				<option value="tags">タグ</option>
 			</select>
 			<input id="word">
-			<button id="register">登録</button>
+			<button id="register" class="btn btn-default btn-xs">登録</button>
 			<div id="wordList">
 				<div id="title">
-					<a>配信名:</a>
+					配信名:
 
 				</div>
 				<div id="author">
-					<a>配信者名:</a>
+					配信者名:
 
 				</div>
 				<div id="tags">
-					<a>タグ名:</a>
+					タグ名:
 
 				</div>
 			</div>
