@@ -115,13 +115,14 @@ $(function() {
 		 newValue.words[type].splice(index, 1);
 
 		 chrome.storage.sync.set(newValue, function() {
-			 var spans = $('#' + type).find('span');
+			 var buttons = $('#' + type).find('button');
 
-			 spans[index].remove();
-			 spans.splice(index, 1);
+			 $('#' + type).find('span')[index].remove();
+			 buttons[index].remove();
+			 buttons.splice(index, 1);
 
-			 for(var i = index; i < spans.length; i++) {
-				 spans[i].id = type + '_' + i;
+			 for(var i = index; i < buttons.length; i++) {
+				 buttons[i].id = type + '_' + i;
 			 }
 		 });
 
@@ -137,8 +138,9 @@ $(function() {
 	 var words = value.words;
 	 Object.keys(words).forEach(function(type) {
 		 for(var i = 0; i < words[type].length; i++) {
-			 var elem = $('<span>').prop('id', type + '_' + i).text(words[type][i] + ' ').on('click', deleteWord);
-			 $('#' + type).append(elem);
+			 var deleteButton = $('<button>').addClass('btn btn-default btn-xs').prop('id', type + '_' + i).html('<a class="glyphicon glyphicon-remove"></a>').on('click', deleteWord);
+			 var word = $('<span>').addClass('item').text(' ' + words[type][i] + ' ');
+			 $('#' + type).append(deleteButton).append(word);
 		 }
 	 });
  });
@@ -153,8 +155,9 @@ $(function() {
 
 			 newValue.words[type].push($('#word').val());
 			 chrome.storage.sync.set(newValue, function() {
-				 var elem = $('<span>').prop('id', type + '_' + idNum).text($('#word').val() + ' ').on('click', deleteWord);
-				 $('#' + type).append(elem);
+				 var deleteButton = $('<button>').addClass('btn btn-default btn-xs').prop('id', type + '_' + idNum).html('<a class="glyphicon glyphicon-remove"></a>').on('click', deleteWord);
+				 var elem = $('<span>').addClass('item').text(' ' + $('#word').val() + ' ');
+				 $('#' + type).append(deleteButton).append(elem);
 				 $('#word').val('');
 			 });
 

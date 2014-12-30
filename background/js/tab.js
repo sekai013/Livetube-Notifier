@@ -1,6 +1,6 @@
 $(function() {
 	var tabset = $('.tabset');
-	var tabs = tabset.find('ul li a');
+	var tabs = tabset.find('.tabs a');
 	var initialTab = tabset.find('.selected');
 	var panels = tabset.find('div.panels div.panel');
 	var initialPanel = $($(initialTab).attr('href'));
