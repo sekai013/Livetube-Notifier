@@ -8,27 +8,28 @@
 		"storage",
 		"alarms",
 		"tabs",
-		"http://livetube.cc/*"
+		"http://livetube.cc/*",
+		"http://h.livetube.cc/*",
+		"http://t.livetube.cc/*",
+		"http://z.livetube.cc/*"
 	],
 	"browser_action": {
-		"default_popup": "background/popup.html",
+		"default_popup": "popup/popup.html",
 		"default_icon": {
-			"19": "img/icon19.png",
-			"38": "img/icon38.png"
+			"19": "icons/icon19.png",
+			"38": "icons/icon38.png"
 		},
 		"default_title": "Livetube Notifier for Google Chrome"
 	},
 	"background": {
 		"scripts": [
-			"background/js/lib/jquery-2.1.1.min.js",
-			"background/js/interface.js",
-			"background/js/background.js"
+			"background.js"
 		]
 	},
 	"icons": {
-		"16": "img/icon16.png",
-		"48": "img/icon48.png",
-		"128": "img/icon128.png"
+		"16": "icons/icon16.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
 	},
 	"manifest_version": 2
 }

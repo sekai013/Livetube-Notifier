@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "utf-8">
+		<title>Livetube Notifier</title>
+		<script src="./lib/js/jquery-2.1.1.min.js"></script>
+		<script src="./popup.js"></script>
+		<link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+		<link rel="stylesheet" href="./popup.css">
+	</head>
+	<body>
+		<ul class="nav nav-tabs tab-menus">
+			<li class="active tab-menu"> <a href="#videos">配信一覧</a> </li>
+			<li class="tab-menu"> <a href="#words">ワード一覧</a> </li>
+		</ul>
+
+		<div id="mainContainer">
+		</div>
+
+		<script type="text/template" id="videosTemplate">
+			<button id="videoToggle" class="btn btn-sm btn-default">配信取得開始</button>
+
+			<span>配信通知間隔</span>
+			<select id="updateIntervalSelector" class="form-control">
+				<option id="min1" value="1">1</option>
+				<option id="min3" value="3">3</option>
+				<option id="min5" value="5">5</option>
+				<option id="min10" value="10">10</option>
+			</select>
+			<span>分</span>
+
+			<div id="videoContainer">
+			</div>
+
+			<input type="checkbox" id="hServer" />
+			<span> h サーバで配信を開く </span>
+			<input type="checkbox" id="autoOpen" />
+			<span> 対象の配信が始まったら自動で開く </span>
+		</script>
+
+		<script type="text/template" id="wordsTemplate">
+			<select id="wordTypeSelector" class="form-control">
+				<option value="title">配信名</option>
+				<option value="author">配信者名</option>
+				<option value="tags">タグ</option>
+			</select>
+			<input id="word" class="form-control" />
+			<button id="registerButton" class="btn btn-default btn-sm form-group">登録</button>
+
+			<div id="wordsContainer">
+				<label for="titleContainer">配信名:</label>
+				<div id="titleContainer">
+				</div>
+
+				<label for="authorContainer">配信者名:</label>
+				<div id="authorContainer">
+				</div>
+
+				<label for="tagsContainer">タグ:</label>
+				<div id="tagsContainer">
+				</div>
+			</div>
+		</script>
+
+	</body>
+</html>
+
+
