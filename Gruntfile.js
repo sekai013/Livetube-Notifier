@@ -65,6 +65,9 @@ module.exports = function(grunt) {
 				}],
 			},
 		},
+		clean: {
+			js: ["source/background.js", "source/popup/popup.js", "source/popup/coffee/*.js"]
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-coffee');
@@ -72,6 +75,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	grunt.registerTask('update', 'Update package.json and manifest.json', function(version) {
 		var pkg = grunt.file.readJSON('package.json');
@@ -99,5 +103,6 @@ module.exports = function(grunt) {
 		'uglify',
 		'cssmin',
 		'copy',
+		'clean',
 	]);
 };

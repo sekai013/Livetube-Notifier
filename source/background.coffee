@@ -169,6 +169,49 @@ chrome.alarms.onAlarm.addListener (alarm) ->
     actions[alarm.name]()
 
 
+# Data initializing
+# format old version(<= 1.3.0) data
+# from the next update, use code commented out below instead
+
+chrome.runtime.onInstalled.addListener ->
+  chrome.storage.sync.get 'state', (value) ->
+    if value.state
+      status =
+        gettingVideos: value.state.gettingVideos
+        useHServer   : value.state.h
+        autoOpen     : value.state.autoOpen
+        updateIntervalInMinutes: value.state.intervalInMinutes
+
+    else
+      status =
+        gettingVideos: false
+        useHServer   : false
+        autoOpen     : false
+        updateIntervalInMinutes: 5
+
+    value.status = status
+    chrome.storage.sync.set value, ->
+      chrome.storage.sync.remove 'state'
+      storage['status'] = value
+
+  chrome.storage.sync.get 'words', (value) ->
+    words = []
+
+    if value.words
+      for type, textList of value.words
+        for text, index in textList
+          word =
+            type: type
+            text: text
+            id  : "#{type}#{index}"
+
+          words.push word
+
+    value.words = words
+    chrome.storage.sync.set value, ->
+      storage['words'] = value
+
+###
 chrome.runtime.onInstalled.addListener ->
   chrome.storage.sync.get 'status', (value) ->
     value.status = value.status or
@@ -178,8 +221,11 @@ chrome.runtime.onInstalled.addListener ->
       updateIntervalInMinutes: 5
 
     chrome.storage.sync.set value, ->
+      storage['status'] = value
 
   chrome.storage.sync.get 'words', (value) ->
     value.words = value.words or []
 
     chrome.storage.sync.set value, ->
+      storage['words'] = value
+###
