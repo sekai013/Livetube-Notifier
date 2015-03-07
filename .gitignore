@@ -2,3 +2,4 @@
 *.zip
 *.swp
 ss*.png
+node_modules/
