@@ -1,35 +1,35 @@
 {
-	"name": "Livetube Notifier",
-	"description": "Have notice of and enjoy your favorite livetube videos!",
-	"version": "1.3.0",
-	"author": "sekai013",
-	"permissions": [
-		"notifications",
-		"storage",
-		"alarms",
-		"tabs",
-		"http://livetube.cc/*",
-		"http://h.livetube.cc/*",
-		"http://t.livetube.cc/*",
-		"http://z.livetube.cc/*"
-	],
-	"browser_action": {
-		"default_popup": "popup/popup.html",
-		"default_icon": {
-			"19": "icons/icon19.png",
-			"38": "icons/icon38.png"
-		},
-		"default_title": "Livetube Notifier for Google Chrome"
-	},
-	"background": {
-		"scripts": [
-			"background.js"
-		]
-	},
-	"icons": {
-		"16": "icons/icon16.png",
-		"48": "icons/icon48.png",
-		"128": "icons/icon128.png"
-	},
-	"manifest_version": 2
+  "name": "Livetube Notifier",
+  "description": "Have notice of and enjoy your favorite livetube videos!",
+  "version": "1.4.0",
+  "author": "sekai013",
+  "permissions": [
+    "notifications",
+    "storage",
+    "alarms",
+    "tabs",
+    "http://livetube.cc/*",
+    "http://h.livetube.cc/*",
+    "http://t.livetube.cc/*",
+    "http://z.livetube.cc/*"
+  ],
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "19": "icons/icon19.png",
+      "38": "icons/icon38.png"
+    },
+    "default_title": "Livetube Notifier for Google Chrome"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "manifest_version": 2
 }
