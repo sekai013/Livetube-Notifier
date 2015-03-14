@@ -65,20 +65,45 @@
       text: text
       id  : Date.now().toString()
 
-    deleteButton = $('<button>')
-      .addClass('btn btn-default btn-xs deleteButton')
-      .attr('id', "#{word.id}_delete")
-      .html('<span class="glyphicon glyphicon-remove"></span>')
-    elem = $('<span>')
-      .attr('id', word.id)
-      .text(word.text)
+    chrome.runtime.getBackgroundPage (bg) ->
+      host =
+        if bg.storage['status'].status.useHServer
+          'http://h.livetube.cc/'
+        else
+          'http://livetube.cc/'
 
-    chrome.runtime.sendMessage chrome.runtime.id,
-      action: 'registerWord'
-      word  : word
+      elems =
+        title: (word) ->
+          $('<span>')
+            .attr('id', word.id)
+            .text(word.text)
 
-    $("##{word.type}Container").append(deleteButton).append(elem)
-    $('#word').val ''
+        author: (word) ->
+          $('<a>')
+            .attr('id', word.id)
+            .attr('href', "#{host}#{encodeURI(word.text)}")
+            .attr('target', "_blank")
+            .text(word.text)
+
+        tags: (word) ->
+          $('<a>')
+            .attr('id', word.id)
+            .attr('href', "#{host}tag.#{encodeURI(word.text)}")
+            .attr('target', "_blank")
+            .text(word.text)
+
+      deleteButton = $('<button>')
+        .addClass('btn btn-default btn-xs deleteButton')
+        .attr('id', "#{word.id}_delete")
+        .html('<span class="glyphicon glyphicon-remove"></span>')
+      elem = elems[word.type](word)
+
+      chrome.runtime.sendMessage chrome.runtime.id,
+        action: 'registerWord'
+        word  : word
+
+      $("##{word.type}Container").append(deleteButton).append(elem)
+      $('#word').val ''
 
   $('#mainContainer').on 'click', '.deleteButton', (e) ->
     [id] = this.id.split '_'

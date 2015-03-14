@@ -28,14 +28,38 @@
 
           $mainContainer.html template
 
+          host =
+            if bg.storage['status'].status.useHServer
+              'http://h.livetube.cc/'
+            else
+              'http://livetube.cc/'
+
+          elems =
+            title: (word) ->
+              $('<span>')
+                .attr('id', word.id)
+                .text(word.text)
+
+            author: (word) ->
+              $('<a>')
+                .attr('id', word.id)
+                .attr('href', "#{host}#{encodeURI(word.text)}")
+                .attr('target', "_blank")
+                .text(word.text)
+
+            tags: (word) ->
+              $('<a>')
+                .attr('id', word.id)
+                .attr('href', "#{host}tag.#{encodeURI(word.text)}")
+                .attr('target', "_blank")
+                .text(word.text)
+
           for word in words
             deleteButton = $('<button>')
               .addClass('btn btn-default btn-xs deleteButton')
               .attr('id', "#{word.id}_delete")
               .html('<span class="glyphicon glyphicon-remove"></span>')
-            elem = $('<span>')
-              .attr('id', word.id)
-              .text(word.text)
+            elem = elems[word.type](word)
 
             $("##{word.type}Container").append(deleteButton).append(elem)
 
