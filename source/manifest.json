@@ -1,7 +1,7 @@
 {
   "name": "Livetube Notifier",
   "description": "Have notice of and enjoy your favorite livetube videos!",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "sekai013",
   "permissions": [
     "notifications",
