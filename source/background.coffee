@@ -76,7 +76,15 @@ extractVideos = (videos, words) ->
 
   for video in videos
     for word in words
-      if video[word.type].indexOf(word.text) isnt -1
+      if word.type is 'tags'
+        keyword = word.text.toUpperCase()
+        target = video['tags'].map (tag) ->
+          return tag.toUpperCase()
+      else
+        keyword = word.text
+        target = video[word.type]
+
+      if target.indexOf(keyword) isnt -1
         result.push video
         break
 
