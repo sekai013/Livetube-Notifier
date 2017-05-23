@@ -1,0 +1,9 @@
+[ignore]
+.*/test/.*
+.*/build/.*
+[include]
+./node_modules
+[libs]
+
+[options]
+unsafe.enable_getters_and_setters=true

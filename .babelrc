@@ -1,0 +1,15 @@
+{
+  "plugins": ["transform-flow-strip-types"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "chrome": 56,
+          "node": "current"
+        }
+      }
+    ],
+    "react"
+  ],
+}

@@ -1,27 +1,56 @@
 {
-  "name": "Livetube-Notifier",
-  "version": "1.4.0",
+  "name": "livetube-notifier",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sekai013/Livetube-Notifier.git"
+    "test": "env NODE_PATH=./build/Release:./build/test ava ./test/background/**/*.js ./test/popup/**/*.js",
+    "flow": "flow",
+    "flow-stop": "flow stop",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:src": "babel --watch=./src --out-dir=./build/Release",
+    "watch:testlib": "babel --watch=./test/lib --out-dir=./build/test/lib",
+    "build": "npm-run-all build:*",
+    "build:manifest": "cp ./src/manifest.json ./build/Release",
+    "build:icons": "cp -r ./src/icons ./build/Release",
+    "popup:babel": "babel ./src/popup -d ./build/Release/popup",
+    "popup:browserify": "browserify ./build/Release/popup/popup.js -o ./build/popup.js && mv ./build/popup.js ./build/Release/popup/popup.js",
+    "popup:others": "cp ./src/popup/popup.html ./build/Release/popup && cp -r ./src/popup/css ./build/Release/popup",
+    "build:popup": "npm-run-all popup:*",
+    "background:babel": "babel ./src/background -d ./build/Release/background",
+    "background:browserify": "browserify ./build/Release/background/background.js -o ./build/background.js && mv ./build/background.js ./build/Release/background/background.js",
+    "build:background": "npm-run-all background:*"
   },
   "author": "sekai013",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sekai013/Livetube-Notifier/issues"
-  },
-  "homepage": "https://github.com/sekai013/Livetube-Notifier",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-coffee": "^0.12.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-cssmin": "^0.12.2",
-    "grunt-contrib-uglify": "^0.7.0"
+    "ava": "^0.18.1",
+    "babel-cli": "^6.22.2",
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-polyfill": "^6.22.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-react": "^6.24.1",
+    "browserify": "^14.3.0",
+    "chrome-mock": "0.0.9",
+    "chrome-promise": "^2.0.2",
+    "eslint": "^3.15.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-import-resolver-node": "^0.3.0",
+    "eslint-plugin-flowtype": "^2.30.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^6.10.0",
+    "fetch-mock": "^5.9.3",
+    "flow-bin": "^0.38.0",
+    "npm-run-all": "^4.0.1"
+  },
+  "dependencies": {
+    "chrome-promise": "^2.0.2",
+    "get-global": "0.0.1",
+    "prop-types": "^15.5.8",
+    "react": "^15.4.2",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0"
   }
 }

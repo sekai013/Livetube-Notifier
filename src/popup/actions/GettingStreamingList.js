@@ -1,0 +1,16 @@
+export const GETTING_STREAMING_LIST_ACTION = {
+  START_GETTING_STREAMING_LIST: 'START_GETTING_STREAMING_LIST',
+  STOP_GETTING_STREAMING_LIST: 'STOP_GETTING_STREAMING_LIST',
+};
+
+export const startGettingStreamingList = () => {
+  return {
+    type: GETTING_STREAMING_LIST_ACTION.START_GETTING_STREAMING_LIST,
+  };
+};
+
+export const stopGettingStreamingList = () => {
+  return {
+    type: GETTING_STREAMING_LIST_ACTION.STOP_GETTING_STREAMING_LIST,
+  };
+};
