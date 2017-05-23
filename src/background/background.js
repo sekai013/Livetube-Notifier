@@ -24,9 +24,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     const gettingStreamingList = status.gettingVideos;
     await chromep.storage.sync.set({settings, gettingStreamingList});
     await chromep.storage.sync.remove('status');
+
     if (manager !== null) {
       manager.settings = settings;
-      manager.gettingStreamingList = gettingStreamingList;
+
+      if (gettingStreamingList) {
+        manager.startGettingStreamingList();
+      }
     }
   }
 
